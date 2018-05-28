@@ -19,6 +19,13 @@ namespace BrushAnnotation
             set { _picturePathDic = value; RaisePropertyChanged(nameof(PicturePathDic)); }
         }
 
+        private Dictionary<string, List<Coverage>> _picsCoverages = new Dictionary<string, List<Coverage>>();
+        public Dictionary<string, List<Coverage>> PicsCoverages
+        {
+            get { return _picsCoverages; }
+            set { _picsCoverages = value; RaisePropertyChanged(nameof(PicsCoverages)); }
+        }
+
         private ObservableCollection<Coverage> _coverageCollection = new ObservableCollection<Coverage>();
         public ObservableCollection<Coverage> CoverageCollection
         {
