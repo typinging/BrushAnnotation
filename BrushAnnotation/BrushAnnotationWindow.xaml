@@ -1,0 +1,71 @@
+﻿<Window x:Class="BrushAnnotation.BrushAnnotationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BrushAnnotation"
+        xmlns:MateralDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d" AllowDrop="True" Drop="Window_Drop" Background="White"
+        Title="MainWindow" Height="450" Width="800">
+
+    <Window.DataContext>
+        <local:BrushAnntationViewModel x:Name="BAViewModel" />
+    </Window.DataContext>
+    
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Shadows.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ToggleButton.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ScrollViewer.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ComboBox.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <DataTemplate x:Key="CoverageTemplate">
+                <StackPanel Orientation="Horizontal">
+                    
+                </StackPanel>
+            </DataTemplate>
+
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <StackPanel Orientation="Vertical">
+        <MateralDesign:ColorZone Padding="16" MateralDesign:ShadowAssist.ShadowDepth="Depth2" Mode="PrimaryMid" >
+            <DockPanel>
+                <!--<MateralDesign:PopupBox DockPanel.Dock="Right" PlacementMode="BottomAndAlignRightEdges" StaysOpen="True">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal" Margin="5">
+                            <TextBlock Text="请输入线程数量" Margin="2" />
+                            <TextBox x:Name="ThreadCountText" Text="3" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="5">
+                            <TextBlock Text="请输入间隔帧数" Margin="2" />
+                            <TextBox x:Name="IntervalText" Text="5" />
+                        </StackPanel>
+                        <ComboBox x:Name="PictureFormat" Margin="2" SelectedIndex="1">
+                            <ComboBoxItem>.jpg</ComboBoxItem>
+                            <ComboBoxItem>.png</ComboBoxItem>
+                        </ComboBox>
+                    </StackPanel>
+                </MateralDesign:PopupBox>-->
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" Text="细胞核标注工具"/>
+            </DockPanel>
+        </MateralDesign:ColorZone>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="0.2*"/>
+            </Grid.ColumnDefinitions>
+            <Grid>
+                <Image Stretch="UniformToFill" Margin="10" />
+                <Grid x:Name="BrushCoverage" />
+            </Grid>
+            <DockPanel LastChildFill="True" Grid.Column="1">
+                <ComboBox SelectedItem="{Binding SelectedPicture}" ItemsSource="{Binding PicturePathDic}" DisplayMemberPath="Key" />
+                <StackPanel></StackPanel>
+                <ListBox ItemsSource="{Binding CoverageCollection}"/>
+            </DockPanel>
+        </Grid>
+    </StackPanel>
+</Window>
