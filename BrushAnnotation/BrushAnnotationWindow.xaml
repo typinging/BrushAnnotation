@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:BrushAnnotation"
         xmlns:MateralDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d" AllowDrop="True" Drop="Window_Drop" Background="White"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="650" Width="1000">
 
     <Window.DataContext>
         <local:BrushAnntationViewModel x:Name="BAViewModel" />
@@ -20,52 +20,64 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ToggleButton.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ScrollViewer.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ComboBox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.CheckBox.xaml" />
+                
             </ResourceDictionary.MergedDictionaries>
+
+            <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
+            <local:StringToImageSourceConverter x:Key="stringToImageSourceConverter" />
+
             <DataTemplate x:Key="CoverageTemplate">
                 <StackPanel Orientation="Horizontal">
-                    
+                    <CheckBox IsChecked="{Binding IsCheck}" Style="{StaticResource MaterialDesignCheckBox}" Margin="5,0"/>
+                    <TextBlock Text="{Binding Name}" Margin="5,0"/>
+                    <ToggleButton IsChecked="{Binding IsVisible}" Margin="5,0" />
                 </StackPanel>
             </DataTemplate>
 
+            <Style x:Key="InkCanvasStyle" TargetType="{x:Type InkCanvas}">
+                <Setter Property="Visibility" Value="{Binding IsVisible, Converter={StaticResource booleanToVisibilityConverter}}"/>
+                <Setter Property="DefaultDrawingAttributes" Value="{Binding DrawAttributes}"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Panel.ZIndex" Value="{Binding ZIndex}"/>
+            </Style>
         </ResourceDictionary>
     </Window.Resources>
 
-    <StackPanel Orientation="Vertical">
-        <MateralDesign:ColorZone Padding="16" MateralDesign:ShadowAssist.ShadowDepth="Depth2" Mode="PrimaryMid" >
+    <DockPanel Margin="10, 0">
+        <MateralDesign:ColorZone DockPanel.Dock="Top" Padding="16" MateralDesign:ShadowAssist.ShadowDepth="Depth2" Mode="PrimaryMid" Panel.ZIndex="3" >
             <DockPanel>
-                <!--<MateralDesign:PopupBox DockPanel.Dock="Right" PlacementMode="BottomAndAlignRightEdges" StaysOpen="True">
-                    <StackPanel Orientation="Vertical">
-                        <StackPanel Orientation="Horizontal" Margin="5">
-                            <TextBlock Text="请输入线程数量" Margin="2" />
-                            <TextBox x:Name="ThreadCountText" Text="3" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="5">
-                            <TextBlock Text="请输入间隔帧数" Margin="2" />
-                            <TextBox x:Name="IntervalText" Text="5" />
-                        </StackPanel>
-                        <ComboBox x:Name="PictureFormat" Margin="2" SelectedIndex="1">
-                            <ComboBoxItem>.jpg</ComboBoxItem>
-                            <ComboBoxItem>.png</ComboBoxItem>
-                        </ComboBox>
-                    </StackPanel>
-                </MateralDesign:PopupBox>-->
                 <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" Text="细胞核标注工具"/>
             </DockPanel>
         </MateralDesign:ColorZone>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="0.2*"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <Grid>
-                <Image Stretch="UniformToFill" Margin="10" />
-                <Grid x:Name="BrushCoverage" />
+                <Image Stretch="UniformToFill" Source="{Binding SelectedPicturePath, Converter={StaticResource stringToImageSourceConverter}}" Margin="10" Panel.ZIndex="1" />
+                <Grid x:Name="BrushCoverage" Panel.ZIndex="2" />
             </Grid>
-            <DockPanel LastChildFill="True" Grid.Column="1">
-                <ComboBox SelectedItem="{Binding SelectedPicture}" ItemsSource="{Binding PicturePathDic}" DisplayMemberPath="Key" />
-                <StackPanel></StackPanel>
-                <ListBox ItemsSource="{Binding CoverageCollection}"/>
-            </DockPanel>
+            <StackPanel Grid.Column="1" Panel.ZIndex="4">
+                <StackPanel DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+                    <ComboBox Margin="5" Text="{Binding SelectedPicture}" ItemsSource="{Binding PicturePathDic}" DisplayMemberPath="Key" />
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="新增图层" Height="40" HorizontalAlignment="Left" Command="{Binding AddNewCommand}" Margin="5"/>
+                            <Button Content="删除图层" Height="40" HorizontalAlignment="Left" Command="{Binding DeleteCommand}" Margin="5"/>
+                        </StackPanel>
+                        <Button Content="{Binding ButtonName}" HorizontalAlignment="Left" Height="40" Command="{Binding WipeStrokesCommand}" Margin="5"/>
+                        <!--<StackPanel Orientation="Vertical">
+                            <TextBlock Text="画笔大小："/>-->
+                        <Slider Minimum="0" Maximum="100" Style="{StaticResource MaterialDesignDiscreteSlider}" ToolTip="请选择画笔大小" Value="{Binding BrushSize}" />
+                        <!--</StackPanel>-->
+                    </StackPanel>
+                </StackPanel>
+                <ScrollViewer>
+                    <ListBox VerticalAlignment="Bottom" HorizontalAlignment="Stretch" ItemsSource="{Binding CoverageCollection}" ItemTemplate="{StaticResource CoverageTemplate}" VerticalContentAlignment="Center" SelectedItem="{Binding SelectedCoverage}"/>
+                </ScrollViewer>
+            </StackPanel>
         </Grid>
-    </StackPanel>
+    </DockPanel>
 </Window>

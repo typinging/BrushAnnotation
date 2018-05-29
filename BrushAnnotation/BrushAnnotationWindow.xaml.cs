@@ -21,6 +21,7 @@ namespace BrushAnnotation
     /// </summary>
     public partial class BrushAnnotationWindow : Window
     {
+        private static readonly string inkCanvasStyleKey = "InkCanvasStyle";
         public BrushAnnotationWindow()
         {
             InitializeComponent();
@@ -29,6 +30,8 @@ namespace BrushAnnotation
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            this.Loaded -= MainWindow_Loaded;
+            BAViewModel.IniContainer(this.BrushCoverage, this.FindResource(inkCanvasStyleKey));
         }
 
         private void Window_Drop(object sender, DragEventArgs e)
@@ -39,6 +42,5 @@ namespace BrushAnnotation
                 BAViewModel.SearchPictures(dPath);
             }
         }
-
     }
 }
